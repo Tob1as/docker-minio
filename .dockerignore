@@ -1,0 +1,18 @@
+# https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore
+.idea/
+*.iml
+
+# ignore folders
+.git
+.cache
+hooks/
+
+# ignore files
+*.md
+docker-compose.yml
+LICENSE
+*.Dockerfile
+
+# minio volume
+minio-data/
+data/

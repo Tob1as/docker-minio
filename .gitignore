@@ -1,0 +1,7 @@
+# https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore
+.idea/
+*.iml
+
+# minio volume
+minio-data/
+data/

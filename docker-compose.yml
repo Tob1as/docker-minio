@@ -1,0 +1,52 @@
+version: "2.4"
+
+# MinIO
+# "mkdir minio-data/ && chmod 777 minio-data/" when use user/group settings
+
+services:
+  
+  minio:
+    #build:
+    #  context: ./
+    #  dockerfile: alpine.multiarch.git_master.Dockerfile
+    #image: tobi312/minio:development
+    image: tobi312/minio:latest
+    container_name: minio
+    #restart: unless-stopped
+    ports:
+      - "9000:9000"
+    volumes:
+      #- minio-data:/data:rw
+      - ./minio-data:/data:rw
+    environment:
+      #TZ: "Europe/Berlin" # not working
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+      # user/group in container instead root
+      #MINIO_USERNAME: minio
+      #MINIO_GROUPNAME: minio
+      #MINIO_UID: 1000
+      #MINIO_GID: 1000
+    command:  ["server", "/data"]
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:9000/minio/health/live"]
+      #start_period: 30s
+      interval: 60s
+      timeout: 10s
+      retries: 3
+    networks:
+      storage:
+
+networks:
+  storage:
+    name: storage
+#    driver: bridge
+#    enable_ipv6: true
+#    ipam:
+#      driver: default
+#      config:
+#        - subnet: 172.20.0.0/24
+#        - subnet: fd00:dead:beef::/48
+
+#volumes:
+#  minio-data:
