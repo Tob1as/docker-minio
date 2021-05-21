@@ -16,7 +16,7 @@ MinIO running on baremetal hardware, Docker and Kubernetes.
 [![MinIO](https://raw.githubusercontent.com/minio/minio/master/.github/logo.svg?sanitize=true)](https://min.io)
 
 ### About these images:
-* based on official Alpine images: [https://hub.docker.com/_/alpine](https://hub.docker.com/_/alpine) / [https://github.com/alpinelinux/docker-alpine](https://github.com/alpinelinux/docker-alpine)
+* based on official Alpine images: [DockerHub](https://hub.docker.com/_/alpine) / [GitHub](https://github.com/alpinelinux/docker-alpine)
 * build from MinIO [GIT](https://github.com/minio/minio):  
     * `development` is build from master branch
     * `latest` is build from latest release branch.
@@ -29,9 +29,8 @@ MinIO running on baremetal hardware, Docker and Kubernetes.
   * `MINIO_ROOT_USER` (set user)
   * `MINIO_ROOT_PASSWORD` (set password)
   * optional: user/group in container instead root: 
-    * `MINIO_USERNAME` (set username, example `minio`)
-    * `MINIO_GROUPNAME` (set groupname, example `minio`)
-    * Optional: `MINIO_UID` and `MINIO_GID` (set ID for user and group, example `1000`)
+    * `MINIO_USERNAME` and `MINIO_GROUPNAME` (set user and group name, example `minio`)
+    * `MINIO_UID` and `MINIO_GID` (set ID for user and group, example `1000`)
 
 #### Docker-Compose
 
