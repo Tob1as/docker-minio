@@ -268,7 +268,7 @@ spec:
   resources:
     requests:
       storage: 50Gi
-  storageClassName: local-storage
+  storageClassName: manual
 
 --- 
 
@@ -283,7 +283,7 @@ metadata:
   labels:
     type: local
 spec:
-  storageClassName: local-storage
+  storageClassName: manual
   persistentVolumeReclaimPolicy: Delete
   capacity:
     storage: 100Gi
