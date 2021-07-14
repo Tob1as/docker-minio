@@ -88,7 +88,8 @@ spec:
       containers:
       - name: minio
         #image: minio/minio:latest
-        image: tobi312/minio:latest
+        #image: tobi312/minio:latest
+        image: tobi312/minio:RELEASE.2021-06-17T00-10-46Z
         imagePullPolicy: Always
         args:
         - server
