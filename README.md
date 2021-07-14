@@ -23,7 +23,7 @@ MinIO running on baremetal hardware, Docker and Kubernetes.
 
 ### How to use these images:
 
-* ``` $ docker run --name minio -v $(pwd)/minio-data:/data:rw -p 9000:9000 -e "MINIO_ROOT_USER=minio" -e "MINIO_ROOT_PASSWORD=minio123" -d tobi312/minio:latest server /data```
+* ``` $ docker run --name minio -v $(pwd)/minio-data:/data:rw -p 9000:9000 -p 9001:9001 -e "MINIO_ROOT_USER=minio" -e "MINIO_ROOT_PASSWORD=minio123" -d tobi312/minio:latest server --console-address ":9001" /data```
 
 * Environment Variables:  
   * `MINIO_ROOT_USER` (set user)
@@ -31,6 +31,10 @@ MinIO running on baremetal hardware, Docker and Kubernetes.
   * optional: user/group in container instead root: 
     * `MINIO_USERNAME` and `MINIO_GROUPNAME` (set user and group name, example `minio`)
     * `MINIO_UID` and `MINIO_GID` (set ID for user and group, example `1000`)
+  * optional: MinIO Console behind a load balancer, proxy or k8s ingress ([*](https://github.com/minio/minio#test-using-minio-console))
+    * `MINIO_BROWSER_REDIRECT_URL`
+
+More Information see official MinIO [Documentation](https://github.com/minio/minio#readme) !
 
 #### Docker-Compose
 
@@ -43,13 +47,14 @@ services:
     container_name: minio
     #restart: unless-stopped
     ports:
-      - "9000:9000"
+      - "9000:9000" # API
+      - "9001:9001" # Console
     volumes:
       - ./minio-data:/data:rw
     environment:
       MINIO_ROOT_USER: minio
       MINIO_ROOT_PASSWORD: minio123
-    command:  ["server", "/data"]
+    command:  ["server", "--address", ":9000", "--console-address", ":9001", "/data"]
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:9000/minio/health/live"]
       interval: 60s
