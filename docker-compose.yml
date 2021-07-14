@@ -14,7 +14,8 @@ services:
     container_name: minio
     #restart: unless-stopped
     ports:
-      - "9000:9000"
+      - "9000:9000" # MinIO API
+      - "9001:9001" # MinIO Console
     volumes:
       #- minio-data:/data:rw
       - ./minio-data:/data:rw
@@ -27,7 +28,9 @@ services:
       #MINIO_GROUPNAME: minio
       #MINIO_UID: 1000
       #MINIO_GID: 1000
-    command:  ["server", "/data"]
+      # use for MinIO Console behind a load balancer, proxy or k8s ingress
+      #MINIO_BROWSER_REDIRECT_URL: "https://console.minio.example.net"
+    command:  ["server", "--address", ":9000", "--console-address", ":9001", "/data"]
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:9000/minio/health/live"]
       #start_period: 30s
