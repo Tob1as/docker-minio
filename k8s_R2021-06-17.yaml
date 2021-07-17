@@ -29,7 +29,6 @@ data:
   MINIO_GROUPNAME: "minio"
   MINIO_UID: "1000"
   MINIO_GID: "1000"
-  #MINIO_BROWSER_REDIRECT_URL: "https://console.minio.example.net"
 
 ---
 
@@ -88,16 +87,10 @@ spec:
       restartPolicy: Always
       containers:
       - name: minio
-        #image: minio/minio:latest
-        image: tobi312/minio:latest
-        #image: tobi312/minio:RELEASE.2021-07-12T02-44-53Z
+        image: tobi312/minio:RELEASE.2021-06-17T00-10-46Z
         imagePullPolicy: Always
         args:
         - server
-        - --address
-        - :9000
-        - --console-address
-        - :9001
         - /data
         envFrom:
           - configMapRef:
@@ -106,7 +99,6 @@ spec:
               name: minio-env-secret
         ports:
         - containerPort: 9000
-        - containerPort: 9001
         readinessProbe:
           httpGet:
             path: /minio/health/ready
@@ -151,10 +143,6 @@ spec:
     - name: "minio"
       port: 9000
       targetPort: 9000
-      protocol: TCP
-    - name: "minioconsole"
-      port: 9001
-      targetPort: 9001
       protocol: TCP
   selector:
     app: minio
@@ -236,14 +224,14 @@ spec:
   - host: minio.example.net
     http:
       paths:
-      # Console / GUI 
-      - path: /
+      # gui
+      - path: /minio
         pathType: Prefix
         backend:
           service:
             name: minio
             port:
-              number: 9001
+              number: 9000
       # buckets for api access (examples)
       - path: /bucket1
         pathType: Prefix

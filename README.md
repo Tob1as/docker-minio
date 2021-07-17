@@ -47,7 +47,7 @@ services:
     container_name: minio
     #restart: unless-stopped
     ports:
-      - "9000:9000" # API
+      - "9000:9000" # Buckets
       - "9001:9001" # Console
     volumes:
       - ./minio-data:/data:rw

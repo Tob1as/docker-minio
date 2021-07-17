@@ -14,7 +14,7 @@ services:
     container_name: minio
     #restart: unless-stopped
     ports:
-      - "9000:9000" # MinIO API
+      - "9000:9000" # MinIO Buckets API
       - "9001:9001" # MinIO Console
     volumes:
       #- minio-data:/data:rw
