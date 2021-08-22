@@ -29,6 +29,7 @@ data:
   MINIO_GROUPNAME: "minio"
   MINIO_UID: "1000"
   MINIO_GID: "1000"
+  #MINIO_SERVER_URL: "https://minio.example.net"
   #MINIO_BROWSER_REDIRECT_URL: "https://console.minio.example.net"
 
 ---
@@ -90,7 +91,6 @@ spec:
       - name: minio
         #image: minio/minio:latest
         image: tobi312/minio:latest
-        #image: tobi312/minio:RELEASE.2021-07-12T02-44-53Z
         imagePullPolicy: Always
         args:
         - server
@@ -236,7 +236,8 @@ spec:
   - host: minio.example.net
     http:
       paths:
-      # Console / GUI 
+      # Console / GUI
+      # https://github.com/minio/console/issues/396 & https://github.com/minio/console/issues/853 & https://github.com/minio/console/issues/952
       - path: /
         pathType: Prefix
         backend:
