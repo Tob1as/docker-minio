@@ -32,6 +32,7 @@ MinIO running on baremetal hardware, Docker and Kubernetes.
     * `MINIO_USERNAME` and `MINIO_GROUPNAME` (set user and group name, example `minio`)
     * `MINIO_UID` and `MINIO_GID` (set ID for user and group, example `1000`)
   * optional: MinIO Console behind a load balancer, proxy or k8s ingress ([*](https://github.com/minio/minio#test-using-minio-console))
+    * `MINIO_SERVER_URL`
     * `MINIO_BROWSER_REDIRECT_URL`
 
 More Information see official MinIO [Documentation](https://github.com/minio/minio#readme) !

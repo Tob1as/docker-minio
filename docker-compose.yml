@@ -1,7 +1,7 @@
 version: "2.4"
 
 # MinIO
-# "mkdir minio-data/ && chmod 777 minio-data/" when use user/group settings
+# "mkdir ./minio-data/ && chmod 777 ./minio-data/" when use user/group settings
 
 services:
   
@@ -29,6 +29,7 @@ services:
       #MINIO_UID: 1000
       #MINIO_GID: 1000
       # use for MinIO Console behind a load balancer, proxy or k8s ingress
+      #MINIO_SERVER_URL: "https://minio.example.net"
       #MINIO_BROWSER_REDIRECT_URL: "https://console.minio.example.net"
     command:  ["server", "--address", ":9000", "--console-address", ":9001", "/data"]
     healthcheck:
