@@ -1,4 +1,4 @@
-FROM golang:1.16-alpine as builder
+FROM golang:1.17-alpine as builder
 
 LABEL maintainer="MinIO Inc <dev@min.io>"
 
@@ -11,11 +11,12 @@ ARG MINIO_RELEASE_VERSION
 RUN  \
      apk add --no-cache git curl && \
      RELEASE=$(curl -s https://api.github.com/repos/minio/minio/releases/latest | grep 'tag_name' | cut -d\" -f4) && \
-     RELEASE=${MINIO_RELEASE_VERSION:-${RELEASE}} && \
-     echo "MINIO_VERSION=${RELEASE}" && \
-     VERSION=$(echo ${RELEASE} | sed 's#RELEASE\.\([0-9]\+\)-\([0-9]\+\)-\([0-9]\+\)T\([0-9]\+\)-\([0-9]\+\)-\([0-9]\+\)Z#\1-\2-\3T\4:\5:\6Z#') && \
+     MINIO_RELEASE_VERSION=${MINIO_RELEASE_VERSION:-${RELEASE}} && \
+     echo "MINIO_RELEASE_VERSION=${MINIO_RELEASE_VERSION}" && \
+     export MINIO_RELEASE="RELEASE" && \
      git clone https://github.com/minio/minio && cd minio && \
-     git checkout ${RELEASE} && go install -v -ldflags "$(go run buildscripts/gen-ldflags.go ${VERSION})"
+     VERSION=$(echo ${MINIO_RELEASE_VERSION} | sed 's#RELEASE\.\([0-9]\+\)-\([0-9]\+\)-\([0-9]\+\)T\([0-9]\+\)-\([0-9]\+\)-\([0-9]\+\)Z#\1-\2-\3T\4:\5:\6Z#') && \
+     git checkout ${MINIO_RELEASE_VERSION} && go install -v -ldflags "$(go run buildscripts/gen-ldflags.go ${VERSION})"
 
 FROM alpine:3.13
 
@@ -38,8 +39,7 @@ ENV MINIO_ACCESS_KEY_FILE=access_key \
     MINIO_SECRET_KEY_FILE=secret_key \
     MINIO_ROOT_USER_FILE=access_key \
     MINIO_ROOT_PASSWORD_FILE=secret_key \
-    MINIO_KMS_MASTER_KEY_FILE=kms_master_key \
-    MINIO_SSE_MASTER_KEY_FILE=sse_master_key \
+    MINIO_KMS_SECRET_KEY_FILE=kms_master_key \
     MINIO_UPDATE_MINISIGN_PUBKEY="RWTx5Zr1tiHQLwG9keckT0c45M3AGeHD6IvimQHpyRywVWGbP1aVSGav" \
     MINIO_CONFIG_ENV_FILE=config.env
 
@@ -52,9 +52,7 @@ COPY --from=builder /go/minio/dockerscripts/docker-entrypoint.sh /usr/bin/
 #COPY docker-entrypoint.sh /usr/bin/
 
 RUN  \
-     apk add --no-cache curl ca-certificates shadow util-linux && \
-     #apk add --no-cache curl ca-certificates 'su-exec>=0.2' && \
-     #echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf && \
+     apk add --no-cache curl ca-certificates shadow util-linux iproute2 iputils && \
      chmod +x /usr/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
