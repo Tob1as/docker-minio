@@ -52,7 +52,7 @@ COPY --from=builder /go/minio/dockerscripts/docker-entrypoint.sh /usr/bin/
 #COPY docker-entrypoint.sh /usr/bin/
 
 RUN  \
-     apk add --no-cache curl ca-certificates shadow util-linux iproute2 iputils && \
+     apk add --no-cache curl ca-certificates shadow util-linux && \
      chmod +x /usr/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
