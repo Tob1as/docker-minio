@@ -10,11 +10,11 @@ set -ex
 echo "### RUN build START: using buildx ###"
 echo "Image Name: ${IMAGE_NAME} (Repo: ${DOCKER_REPO}, Tag: ${DOCKER_TAG})"
 echo "Dockerfile Path/Name: ${DOCKERFILE_PATH}"
-BUILDPLATFORM="${BUILDPLATFORM:-"linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6"}"
+BUILDPLATFORM="${BUILDPLATFORM:-"linux/amd64,linux/arm64/v8,linux/arm/v7,linux/arm/v6"}"
 echo "Architectures=${BUILDPLATFORM}"
 
 # for minio (release) only
-if [[ ${IMAGE_NAME} == *"minio:latest"* ]]; then
+if [[ ${IMAGE_NAME} == *"minio:latest" ]]; then
 	RELEASE=$(curl -s https://api.github.com/repos/minio/minio/releases/latest | grep 'tag_name' | cut -d\" -f4)
 	echo "MINIO_RELEASE_VERSION=${RELEASE}"
 	BUILD_ARG_VERSION="--build-arg MINIO_RELEASE_VERSION=${RELEASE}"
