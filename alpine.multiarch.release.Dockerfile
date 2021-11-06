@@ -32,22 +32,35 @@ RUN  set -ex && \
      RELEASE=${RELEASE:-$(curl -s https://api.github.com/repos/minio/minio/releases/latest | grep 'tag_name' | cut -d\" -f4)} && \
      echo "RELEASE VERSION=${RELEASE}" && \
      ## TARGETARCH ##
+	 # https://en.wikipedia.org/wiki/Uname
      ARCH=`uname -m` && \
-	 echo "ARCH=$ARCH" && \
+	  echo "ARCH=$ARCH" && \
      if [ "$ARCH" == "x86_64" ]; then \
-        echo "x86_64" && \
+        echo "x86_64 (amd64)" && \
         TARGETARCH="amd64"; \
-     elif [ "$ARCH" == "armv7l" ]; then \
-        echo "arm" && \
-        TARGETARCH="arm"; \
-     elif [ "$ARCH" == "arm64v8" ]; then \
+     elif [ "$ARCH" == "amd64" ]; then \
+        echo "amd64" && \
+        TARGETARCH="amd64"; \
+     elif [ "$ARCH" == "arm64" ]; then \
         echo "arm64" && \
         TARGETARCH="arm64"; \
+     elif [ "$ARCH" == "aarch64" ]; then \
+        echo "aarch64 (arm64)" && \
+        TARGETARCH="arm64"; \
+     elif [ "$ARCH" == "armv7l" ]; then \
+        echo "armv7l (arm)" && \
+        TARGETARCH="arm"; \
+     elif [ "$ARCH" == "armv6l" ]; then \
+        echo "armv6l (arm)" && \
+        TARGETARCH="arm"; \
+     elif [ "$ARCH" == "armhf" ]; then \
+        echo "armhf (arm)" && \
+        TARGETARCH="arm"; \
      else \
         echo "unknown arch" && \
-		exit 1; \
+        exit 1; \
      fi && \ 
-	 export TARGETARCH=$TARGETARCH && \
+     export TARGETARCH=$TARGETARCH && \
      ## COPY FILES ##
      mkdir /licenses && \
      curl -s -q https://raw.githubusercontent.com/minio/minio/${RELEASE}/CREDITS -o /licenses/CREDITS && \
