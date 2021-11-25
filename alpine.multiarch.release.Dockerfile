@@ -23,11 +23,11 @@ ENV MINIO_ACCESS_KEY_FILE=access_key \
     MINIO_KMS_SECRET_KEY_FILE=kms_master_key \
     MINIO_UPDATE_MINISIGN_PUBKEY="RWTx5Zr1tiHQLwG9keckT0c45M3AGeHD6IvimQHpyRywVWGbP1aVSGav" \
     MINIO_CONFIG_ENV_FILE=config.env \
-    PATH=$PATH:/opt/bin
+    PATH=/opt/bin:$PATH
 
 RUN  set -ex && \
      apk add --no-cache curl ca-certificates shadow util-linux && \
-     apk add --no-cache --virtual .build-deps minisign --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing && \
+     apk add --no-cache --virtual .build-deps minisign --repository http://dl-cdn.alpinelinux.org/alpine/edge/community && \
      ## GET RELEASE_VERSION ##
      RELEASE=${RELEASE:-$(curl -s https://api.github.com/repos/minio/minio/releases/latest | grep 'tag_name' | cut -d\" -f4)} && \
      echo "RELEASE VERSION=${RELEASE}" && \
