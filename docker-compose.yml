@@ -19,6 +19,8 @@ services:
     volumes:
       #- minio-data:/data:rw
       - ./minio-data:/data:rw
+      #- ./ssl/ssl.crt:/root/.minio/certs/public.crt:ro  # works only with root user and set URLs (and Port)
+      #- ./ssl/ssl.key:/root/.minio/certs/private.key:ro # (https://github.com/Tob1asDocker/minio/issues/1#issuecomment-1003127867)
     environment:
       #TZ: "Europe/Berlin" # not working
       MINIO_ROOT_USER: minio
@@ -34,6 +36,7 @@ services:
     command:  ["server", "--address", ":9000", "--console-address", ":9001", "/data"]
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:9000/minio/health/live"]
+      #test: ["CMD", "curl", "--fail", "--insecure", "https://localhost:9000/minio/health/live"] # when use minio ssl
       #start_period: 30s
       interval: 60s
       timeout: 10s
