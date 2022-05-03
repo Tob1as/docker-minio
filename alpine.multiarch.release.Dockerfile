@@ -1,4 +1,4 @@
-FROM alpine:3.13
+FROM alpine:latest
 
 ARG MINIO_RELEASE_VERSION
 ARG RELEASE=$MINIO_RELEASE_VERSION
@@ -26,8 +26,7 @@ ENV MINIO_ACCESS_KEY_FILE=access_key \
     PATH=/opt/bin:$PATH
 
 RUN  set -ex && \
-     apk add --no-cache curl ca-certificates shadow util-linux && \
-     apk add --no-cache --virtual .build-deps minisign --repository http://dl-cdn.alpinelinux.org/alpine/edge/community && \
+     apk add --no-cache curl ca-certificates shadow util-linux minisign && \
      ## GET RELEASE_VERSION ##
      RELEASE=${RELEASE:-$(curl -s https://api.github.com/repos/minio/minio/releases/latest | grep 'tag_name' | cut -d\" -f4)} && \
      echo "RELEASE VERSION=${RELEASE}" && \

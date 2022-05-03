@@ -92,7 +92,9 @@ jobs:
             VCS_REF=${{steps.script.outputs.commit_hash}}
             MINIO_RELEASE_VERSION=${{steps.script.outputs.minio_release_version}}
           tags: |
-            ghcr.io/${{steps.script.outputs.github_repo}}:latest-official-${{steps.script.outputs.minio_release_version}}
-            ghcr.io/${{steps.script.outputs.github_repo}}:latest-official
-            docker.io/${{steps.script.outputs.docker_repo}}:latest-official
-            quay.io/${{steps.script.outputs.redhat_quay_repo}}:latest-official
+            ghcr.io/${{steps.script.outputs.github_repo}}:${{steps.script.outputs.minio_release_version}}
+            ghcr.io/${{steps.script.outputs.github_repo}}:latest
+            docker.io/${{steps.script.outputs.docker_repo}}:${{steps.script.outputs.minio_release_version}}
+            docker.io/${{steps.script.outputs.docker_repo}}:latest
+            quay.io/${{steps.script.outputs.redhat_quay_repo}}:${{steps.script.outputs.minio_release_version}}
+            quay.io/${{steps.script.outputs.redhat_quay_repo}}:latest

@@ -18,7 +18,7 @@ RUN  \
      VERSION=$(echo ${MINIO_RELEASE_VERSION} | sed 's#RELEASE\.\([0-9]\+\)-\([0-9]\+\)-\([0-9]\+\)T\([0-9]\+\)-\([0-9]\+\)-\([0-9]\+\)Z#\1-\2-\3T\4:\5:\6Z#') && \
      git checkout ${MINIO_RELEASE_VERSION} && go install -v -ldflags "$(go run buildscripts/gen-ldflags.go ${VERSION})"
 
-FROM alpine:3.13
+FROM alpine:latest
 
 ARG VCS_REF
 ARG BUILD_DATE

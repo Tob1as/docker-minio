@@ -11,7 +11,7 @@ RUN  \
      git clone https://github.com/minio/minio && cd minio && \
      git checkout master && go install -v -ldflags "$(go run buildscripts/gen-ldflags.go)"
 
-FROM alpine:3.13
+FROM alpine:latest
 
 ARG VCS_REF
 ARG BUILD_DATE
