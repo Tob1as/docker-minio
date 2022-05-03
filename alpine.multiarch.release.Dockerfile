@@ -74,8 +74,7 @@ RUN  set -ex && \
      chmod +x /opt/bin/minio && \
      chmod +x /usr/bin/docker-entrypoint.sh && \
      chmod +x /usr/bin/verify-minio.sh && \
-     /usr/bin/verify-minio.sh && \
-     apk del .build-deps
+     /usr/bin/verify-minio.sh
 	
 EXPOSE 9000
 
