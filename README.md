@@ -16,9 +16,7 @@ MinIO running on baremetal hardware, Docker and Kubernetes.
 
 ### About these images:
 * based on official Alpine images: [DockerHub](https://hub.docker.com/_/alpine) / [GitHub](https://github.com/alpinelinux/docker-alpine)
-* build from MinIO [GIT](https://github.com/minio/minio):  
-    * `development` is build from master branch
-    * `latest` is build from latest release branch.
+* build from MinIO offical [Release](https://dl.min.io/server/minio/release)
 
 ### How to use these images:
 
