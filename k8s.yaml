@@ -25,12 +25,12 @@ metadata:
     app: minio
 data:
   #TZ: "Europe/Berlin" # not working
-  MINIO_USERNAME: "minio"
-  MINIO_GROUPNAME: "minio"
-  MINIO_UID: "1000"
-  MINIO_GID: "1000"
-  #MINIO_SERVER_URL: "https://minio.example.net"
-  #MINIO_BROWSER_REDIRECT_URL: "https://console.minio.example.net"
+  #MINIO_USERNAME: "minio"
+  #MINIO_GROUPNAME: "minio"
+  #MINIO_UID: "1000"
+  #MINIO_GID: "1000"
+  MINIO_SERVER_URL: "https://minio.example.com"
+  MINIO_BROWSER_REDIRECT_URL: "https://minio-console.example.com"
 
 ---
 
@@ -57,6 +57,20 @@ data:
   #MINIO_SECRET_KEY: bWluaW8xMjM=      # use MINIO_ROOT_PASSWORD
 
 ---
+
+## add own cert CAs for Minio
+
+#apiVersion: v1
+#kind: Secret
+#metadata:
+#  name: ca-files-secret
+#  namespace: default
+#type: Opaque
+#data:
+#  my-ca.crt: <my-ca.crt in base64>
+#  other-ca.crt: <other-ca.crt in base64>
+#
+#---
 
 ## Deployment/Pod:
 ## https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
@@ -129,10 +143,17 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: minio-data
+        - mountPath: /root/.minio/certs/CAs  # https://docs.min.io/docs/how-to-secure-access-to-minio-server-with-tls.html#install-certificates-from-third-party-cas
+          name: cacerts
       volumes:
         - name: minio-data
           persistentVolumeClaim:
             claimName: minio-data
+        - name: cacerts
+          secret:
+            secretName: ca-files-secret
+            defaultMode: 0644
+            optional: true
 
 --- 
 
@@ -221,44 +242,39 @@ metadata:
     kubernetes.io/ingress.class: nginx
     #nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    # CertManager:
-    #cert-manager.io/cluster-issuer: certmanager-ingress-nginx
+    #cert-manager.io/cluster-issuer: ingress-tls-secret
     #cert-manager.io/acme-challenge-type: http01
-    ## oAuth2: https://kubernetes.github.io/ingress-nginx/examples/auth/oauth-external-auth/
+    ## https://kubernetes.github.io/ingress-nginx/examples/auth/oauth-external-auth/
     #nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
     #nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
 spec:
   tls:
   - hosts:
-    - minio.example.net
+    - minio.example.com
+    - minio-console.example.com
     secretName: ingress-tls-secret
   rules:
-  - host: minio.example.net
+  - host: minio-console.example.com
     http:
       paths:
-      # Console / GUI
-      # https://github.com/minio/console/issues/396 & https://github.com/minio/console/issues/853 & https://github.com/minio/console/issues/952
       - path: /
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: minio
             port:
+              #name: minioconsole
               number: 9001
-      # buckets for api access (examples)
-      - path: /bucket1
-        pathType: Prefix
+  - host: minio.example.com
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
         backend:
           service:
             name: minio
             port:
-              number: 9000
-      - path: /bucket2
-        pathType: Prefix
-        backend:
-          service:
-            name: minio
-            port:
+              #name: minio
               number: 9000
 
 ---
@@ -304,3 +320,21 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: "/mnt/k8sdata"
+
+---
+
+# or with https://github.com/rancher/local-path-provisioner
+
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: minio-data
+#  namespace: default
+#spec:
+#  accessModes:
+#    - ReadWriteOnce
+#  volumeMode: Filesystem
+#  resources:
+#    requests:
+#      storage: 100Gi
+#  storageClassName: local-path
