@@ -33,7 +33,7 @@ LABEL org.opencontainers.image.title="MinIO" \
      org.opencontainers.image.description="MinIO is a High Performance Object Storage, API compatible with Amazon S3 cloud storage service." \
      org.opencontainers.image.licenses="AGPL-3.0" \
      org.opencontainers.image.url="https://hub.docker.com/r/tobi312/minio" \
-     org.opencontainers.image.source="https://github.com/Tob1asDocker/minio"
+     org.opencontainers.image.source="https://github.com/Tob1as/docker-minio"
 
 ENV MINIO_ACCESS_KEY_FILE=access_key \
     MINIO_SECRET_KEY_FILE=secret_key \

@@ -2,7 +2,7 @@
 
 ### Supported tags and respective `Dockerfile` links
 
--	[`latest`, `RELEASE.<date>` (*Dockerfile*)](https://github.com/Tob1asDocker/minio/blob/main/alpine.multiarch.release.Dockerfile)
+-	[`latest`, `RELEASE.<date>` (*Dockerfile*)](https://github.com/Tob1as/docker-minio/blob/main/alpine.multiarch.release.Dockerfile)
 
 ### What is MinIO?
 
@@ -87,4 +87,4 @@ Solution:
 
 ### This Image on
 * [DockerHub](https://hub.docker.com/r/tobi312/minio/)
-* [GitHub](https://github.com/Tob1asDocker/minio)
+* [GitHub](https://github.com/Tob1as/docker-minio)

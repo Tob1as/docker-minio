@@ -6,7 +6,7 @@
 ## 
 
 ## https://min.io/ + https://github.com/minio/minio + https://hub.docker.com/r/minio/minio
-## https://github.com/Tob1asDocker/minio + https://hub.docker.com/r/tobi312/minio
+## https://github.com/Tob1as/docker-minio + https://hub.docker.com/r/tobi312/minio
 
 ## https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 ## kubectl apply -f k8s.yaml
