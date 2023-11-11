@@ -33,9 +33,12 @@ jobs:
           REDHAT_QUAY_REPO=${{ secrets.REDHAT_QUAY_USERNAME }}/${GITHUB_REPO_SHORT}
 
           # MinIO
-          RELEASE=$(curl -s https://api.github.com/repos/minio/minio/releases/latest | grep 'tag_name' | cut -d\" -f4)
-          echo "MINIO_RELEASE_VERSION=${RELEASE}"
-          MINIO_RELEASE_VERSION=${RELEASE}
+          MINIO_RELEASE_VERSION=$(curl -s https://api.github.com/repos/minio/minio/releases/latest | grep 'tag_name' | cut -d\" -f4)
+          echo "MINIO_RELEASE_VERSION=${MINIO_RELEASE_VERSION}"
+
+          # MinIO
+          MC_RELEASE_VERSION=$(curl -s https://api.github.com/repos/minio/mc/releases/latest | grep 'tag_name' | cut -d\" -f4)
+          echo "MC_RELEASE_VERSION=${MC_RELEASE_VERSION}"
           
           # Set output parameters to GitHub action.
           echo ::set-output name=build_date::${BUILD_DATE}
@@ -46,6 +49,7 @@ jobs:
           echo ::set-output name=redhat_quay_repo::${REDHAT_QUAY_REPO}
           # MinIO
           echo ::set-output name=minio_release_version::${MINIO_RELEASE_VERSION}
+          echo ::set-output name=mc_release_version::${MC_RELEASE_VERSION}
 
       - name: Set up QEMU
         id: qemu
@@ -92,6 +96,7 @@ jobs:
             BUILD_DATE=${{steps.script.outputs.build_date}}
             VCS_REF=${{steps.script.outputs.commit_hash}}
             MINIO_RELEASE_VERSION=${{steps.script.outputs.minio_release_version}}
+            MC_RELEASE_VERSION=${{steps.script.outputs.mc_release_version}}
           tags: |
             ghcr.io/${{steps.script.outputs.github_repo}}:${{steps.script.outputs.minio_release_version}}
             ghcr.io/${{steps.script.outputs.github_repo}}:latest
