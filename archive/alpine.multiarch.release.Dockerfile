@@ -1,13 +1,33 @@
-FROM alpine:latest as build
+FROM alpine:latest
 
 ARG MINIO_RELEASE_VERSION
 ARG MC_RELEASE_VERSION
+ARG VCS_REF
+ARG BUILD_DATE
 
-ENV MINIO_UPDATE_MINISIGN_PUBKEY="RWTx5Zr1tiHQLwG9keckT0c45M3AGeHD6IvimQHpyRywVWGbP1aVSGav"
+LABEL org.opencontainers.image.title="MinIO" \
+      org.opencontainers.image.vendor="MinIO Inc <dev@min.io>" \
+      org.opencontainers.image.authors="MinIO Inc <dev@min.io>, Tobias Hargesheimer <docker@ison.ws>" \
+      org.opencontainers.image.version="${MINIO_RELEASE_VERSION}" \
+      org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      org.opencontainers.image.description="MinIO is a High Performance Object Storage, API compatible with Amazon S3 cloud storage service." \
+      org.opencontainers.image.licenses="AGPL-3.0" \
+      org.opencontainers.image.url="https://hub.docker.com/r/tobi312/minio" \
+      org.opencontainers.image.source="https://github.com/Tob1as/docker-minio"
+
+ENV MINIO_ACCESS_KEY_FILE=access_key \
+    MINIO_SECRET_KEY_FILE=secret_key \
+    MINIO_ROOT_USER_FILE=access_key \
+    MINIO_ROOT_PASSWORD_FILE=secret_key \
+    MINIO_KMS_SECRET_KEY_FILE=kms_master_key \
+    MINIO_UPDATE_MINISIGN_PUBKEY="RWTx5Zr1tiHQLwG9keckT0c45M3AGeHD6IvimQHpyRywVWGbP1aVSGav" \
+    MINIO_CONFIG_ENV_FILE=config.env \
+    MC_CONFIG_DIR=/tmp/.mc
 
 RUN \
    set -ex && \
-   apk add --no-cache curl ca-certificates minisign && \
+   apk add --no-cache curl ca-certificates shadow util-linux minisign && \
    ## TARGETARCH ##
 	# https://en.wikipedia.org/wiki/Uname
    ARCH=`uname -m` && \
@@ -61,47 +81,7 @@ RUN \
    curl -s -q https://raw.githubusercontent.com/minio/minio/${MINIO_RELEASE_VERSION}/LICENSE -o /licenses/LICENSE && \
    curl -s -q https://raw.githubusercontent.com/minio/minio/${MINIO_RELEASE_VERSION}/dockerscripts/docker-entrypoint.sh -o /usr/bin/docker-entrypoint.sh && \
    chmod +x /usr/bin/docker-entrypoint.sh
-
-FROM alpine:latest
-
-ARG MINIO_RELEASE_VERSION
-ARG MC_RELEASE_VERSION
-ARG VCS_REF
-ARG BUILD_DATE
-
-LABEL org.opencontainers.image.title="MinIO" \
-      org.opencontainers.image.vendor="MinIO Inc <dev@min.io>" \
-      org.opencontainers.image.authors="MinIO Inc <dev@min.io>, Tobias Hargesheimer <docker@ison.ws>" \
-      org.opencontainers.image.version="${MINIO_RELEASE_VERSION}" \
-      org.opencontainers.image.created="${BUILD_DATE}" \
-      org.opencontainers.image.revision="${VCS_REF}" \
-      org.opencontainers.image.description="MinIO is a High Performance Object Storage, API compatible with Amazon S3 cloud storage service." \
-      org.opencontainers.image.documentation="https://min.io/docs/minio/container/index.html , https://github.com/minio/minio" \
-      org.opencontainers.image.licenses="AGPL-3.0" \
-      org.opencontainers.image.base.name="docker.io/library/alpine:latest" \
-      org.opencontainers.image.url="https://hub.docker.com/r/tobi312/minio" \
-      org.opencontainers.image.source="https://github.com/Tob1as/docker-minio"
-
-ENV MINIO_ACCESS_KEY_FILE=access_key \
-    MINIO_SECRET_KEY_FILE=secret_key \
-    MINIO_ROOT_USER_FILE=access_key \
-    MINIO_ROOT_PASSWORD_FILE=secret_key \
-    MINIO_KMS_SECRET_KEY_FILE=kms_master_key \
-    MINIO_UPDATE_MINISIGN_PUBKEY="RWTx5Zr1tiHQLwG9keckT0c45M3AGeHD6IvimQHpyRywVWGbP1aVSGav" \
-    MINIO_CONFIG_ENV_FILE=config.env \
-    MC_CONFIG_DIR=/tmp/.mc
-
-RUN apk add --no-cache curl ca-certificates
-
-#COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=build /usr/bin/minio /usr/bin/minio
-COPY --from=build /usr/bin/mc /usr/bin/mc
-#COPY --from=build /usr/bin/curl /usr/bin/curl
-
-COPY --from=build /licenses/CREDITS /licenses/CREDITS
-COPY --from=build /licenses/LICENSE /licenses/LICENSE
-COPY --from=build /usr/bin/docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
-
+	
 EXPOSE 9000
 VOLUME ["/data"]
 
