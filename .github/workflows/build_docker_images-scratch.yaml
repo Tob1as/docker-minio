@@ -136,8 +136,8 @@ jobs:
             MINIO_RELEASE_VERSION=${{steps.script.outputs.minio_release_version}}
             MC_RELEASE_VERSION=${{steps.script.outputs.mc_release_version}}
           tags: |
-            ghcr.io/${{steps.script.outputs.github_repo}}:scratch-${{steps.script.outputs.minio_release_version}}
-            ghcr.io/${{steps.script.outputs.github_repo}}:scratch
+            ${{steps.script.outputs.git_url}}/${{steps.script.outputs.git_repo}}:scratch-${{steps.script.outputs.minio_release_version}}
+            ${{steps.script.outputs.git_url}}/${{steps.script.outputs.git_repo}}:scratch
             docker.io/${{steps.script.outputs.docker_repo}}:scratch-${{steps.script.outputs.minio_release_version}}
             docker.io/${{steps.script.outputs.docker_repo}}:scratch
             quay.io/${{steps.script.outputs.redhat_quay_repo}}:scratch-${{steps.script.outputs.minio_release_version}}

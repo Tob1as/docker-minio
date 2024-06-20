@@ -136,10 +136,10 @@ jobs:
             MINIO_RELEASE_VERSION=${{steps.script.outputs.minio_release_version}}
             MC_RELEASE_VERSION=${{steps.script.outputs.mc_release_version}}
           tags: |
-            ghcr.io/${{steps.script.outputs.github_repo}}:${{steps.script.outputs.minio_release_version}}
-            ghcr.io/${{steps.script.outputs.github_repo}}:latest
-            ghcr.io/${{steps.script.outputs.github_repo}}:alpine-${{steps.script.outputs.minio_release_version}}
-            ghcr.io/${{steps.script.outputs.github_repo}}:alpine
+            ${{steps.script.outputs.git_url}}/${{steps.script.outputs.git_repo}}:${{steps.script.outputs.minio_release_version}}
+            ${{steps.script.outputs.git_url}}/${{steps.script.outputs.git_repo}}:latest
+            ${{steps.script.outputs.git_url}}/${{steps.script.outputs.git_repo}}:alpine-${{steps.script.outputs.minio_release_version}}
+            ${{steps.script.outputs.git_url}}/${{steps.script.outputs.git_repo}}:alpine
             docker.io/${{steps.script.outputs.docker_repo}}:${{steps.script.outputs.minio_release_version}}
             docker.io/${{steps.script.outputs.docker_repo}}:latest
             docker.io/${{steps.script.outputs.docker_repo}}:alpine-${{steps.script.outputs.minio_release_version}}
