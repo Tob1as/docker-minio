@@ -44,17 +44,21 @@ RUN \
    ## Download minio binary and signature file ##
    curl -s -q https://dl.min.io/server/minio/release/linux-${TARGETARCH}/archive/minio.${MINIO_RELEASE_VERSION} -o /usr/bin/minio && \
    curl -s -q https://dl.min.io/server/minio/release/linux-${TARGETARCH}/archive/minio.${MINIO_RELEASE_VERSION}.minisig -o /tmp/minio.minisig && \
+   curl -s -q https://dl.min.io/server/minio/release/linux-${TARGETARCH}/archive/minio.${MINIO_RELEASE_VERSION}.sha256sum -o /tmp/minio.sha256sum && \
    chmod +x /usr/bin/minio && \
    ## GET MC_RELEASE_VERSION ##
    MC_RELEASE_VERSION=${MC_RELEASE_VERSION:-$(curl -s https://api.github.com/repos/minio/mc/releases/latest | grep 'tag_name' | cut -d\" -f4)} && \
    echo "MC_RELEASE_VERSION=${MC_RELEASE_VERSION}" && \
    ## Download mc binary and signature file ##
-   curl -s -q https://dl.min.io/client/mc/release/linux-${TARGETARCH}/mc.${MC_RELEASE_VERSION} -o /usr/bin/mc && \
-   curl -s -q https://dl.min.io/client/mc/release/linux-${TARGETARCH}/mc.${MC_RELEASE_VERSION}.minisig -o /tmp/mc.minisig && \
+   curl -s -q https://dl.min.io/client/mc/release/linux-${TARGETARCH}/archive/mc.${MC_RELEASE_VERSION} -o /usr/bin/mc && \
+   curl -s -q https://dl.min.io/client/mc/release/linux-${TARGETARCH}/archive/mc.${MC_RELEASE_VERSION}.minisig -o /tmp/mc.minisig && \
+   curl -s -q https://dl.min.io/client/mc/release/linux-${TARGETARCH}/archive/mc.${MC_RELEASE_VERSION}.sha256sum -o /tmp/mc.sha256sum && \
    chmod +x /usr/bin/mc && \
    ## Verify binary signature using public key ##
    minisign -Vqm /usr/bin/minio -x /tmp/minio.minisig -P ${MINIO_UPDATE_MINISIGN_PUBKEY} && \
    minisign -Vqm /usr/bin/mc -x /tmp/mc.minisig -P ${MINIO_UPDATE_MINISIGN_PUBKEY} && \
+   #echo "$(awk '{print $1}' /tmp/minio.sha256sum) /usr/bin/minio" | sha256sum -c || exit 1 && \
+   #echo "$(awk '{print $1}' /tmp/mc.sha256sum) /usr/bin/mc" | sha256sum -c || exit 1 && \
    ## Download minio cerdits, license and docker-entrypoint ##
    mkdir /licenses && \
    curl -s -q https://raw.githubusercontent.com/minio/minio/${MINIO_RELEASE_VERSION}/CREDITS -o /licenses/CREDITS && \
