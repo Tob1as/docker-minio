@@ -59,32 +59,7 @@ services:
       interval: 60s
       timeout: 10s
       retries: 3
-```
-
-#### Troubleshooting
-
-<details>
-<summary>If your container fails to start with Images that based on Alpine 3.13 and newer or newer Debian/Ubuntu on ARM devices with Raspbian/Debian 10 Buster (32 bit)...</summary>
-<p>
-
-... then update `libseccomp2`[*](https://packages.debian.org/buster-backports/libseccomp2) to >=2.4.4 and restart the container. (Source: [1](https://docs.linuxserver.io/faq#libseccomp), [2](https://github.com/owncloud/docs/pull/3196#issue-577993147), [3](https://github.com/moby/moby/issues/40734))  
-  
-Example (wrong date):
-```sh
-$ docker run --rm --name testing -it alpine:3.13 date
-Sun Jan  0 00:100:4174038  1900
-```
-  
-Solution:
-```sh
- sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC 648ACFD622F3D138
- echo "deb http://deb.debian.org/debian buster-backports main" | sudo tee -a /etc/apt/sources.list.d/buster-backports.list
- sudo apt update
- sudo apt install -t buster-backports libseccomp2
-```
-</p>
-</details>
-  
+```  
 
 ### This Image on
 * [DockerHub](https://hub.docker.com/r/tobi312/minio/)
