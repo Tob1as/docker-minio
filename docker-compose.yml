@@ -10,7 +10,7 @@ services:
     #  context: ./
     #  dockerfile: alpine.multiarch.git_master.Dockerfile
     #image: tobi312/minio:development
-    image: tobi312/minio:latest
+    image: tobi312/minio:latest  # or: tobi312/minio:scratch
     container_name: minio
     #restart: unless-stopped
     ports:
@@ -39,7 +39,7 @@ services:
       #test: ["CMD", "curl", "--fail", "--insecure", "https://localhost:9000/minio/health/live"] # when use minio ssl
       #start_period: 30s
       interval: 60s
-      timeout: 10s
+      timeout: 5s
       retries: 3
     networks:
       storage:
