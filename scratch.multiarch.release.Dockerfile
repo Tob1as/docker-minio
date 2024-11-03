@@ -135,8 +135,10 @@ COPY --from=static-curl /usr/local/bin/curl /usr/bin/curl
 
 COPY --from=build /licenses/CREDITS /licenses/CREDITS
 COPY --from=build /licenses/LICENSE /licenses/LICENSE
+COPY --from=build /usr/bin/docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
 
 EXPOSE 9000
 VOLUME ["/data"]
 
-ENTRYPOINT  ["minio"]
+#ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
+CMD ["minio"]
