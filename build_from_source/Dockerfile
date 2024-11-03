@@ -30,7 +30,7 @@ RUN \
     cd /go/src/mc && make build && make install && make clean ; \
     /go/bin/mc --version
 
-FROM scratch
+FROM alpine:latest
 
 ARG MINIO_RELEASE_VERSION
 ARG MC_RELEASE_VERSION
@@ -46,7 +46,7 @@ LABEL org.opencontainers.image.title="MinIO" \
       org.opencontainers.image.description="MinIO is a High Performance Object Storage, API compatible with Amazon S3 cloud storage service." \
       org.opencontainers.image.documentation="https://min.io/docs/minio/container/index.html , https://github.com/minio/minio" \
       org.opencontainers.image.licenses="AGPL-3.0" \
-      org.opencontainers.image.base.name="scratch" \
+      org.opencontainers.image.base.name="docker.io/library/alpine:latest" \
       org.opencontainers.image.url="https://hub.docker.com/r/tobi312/minio" \
       org.opencontainers.image.source="https://github.com/Tob1as/docker-minio"
 
@@ -59,7 +59,9 @@ ENV MINIO_ACCESS_KEY_FILE=access_key \
     MINIO_CONFIG_ENV_FILE=config.env \
     MC_CONFIG_DIR=/tmp/.mc
 
-COPY --from=base /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+RUN apk add --no-cache curl ca-certificates
+
+#COPY --from=base /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=minio /go/bin/minio /usr/bin/minio
 COPY --from=mc /go/bin/mc /usr/bin/mc
 #COPY --from=static-curl /usr/local/bin/curl /usr/bin/curl
@@ -71,5 +73,5 @@ COPY --from=minio /go/src/minio/dockerscripts/docker-entrypoint.sh /usr/bin/dock
 EXPOSE 9000
 VOLUME ["/data"]
 
-#ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 CMD ["minio"]
