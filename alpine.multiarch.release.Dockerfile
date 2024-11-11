@@ -1,4 +1,4 @@
-FROM alpine:latest as build
+FROM alpine:latest AS build
 
 ARG MINIO_RELEASE_VERSION
 ARG MC_RELEASE_VERSION
@@ -15,23 +15,11 @@ RUN \
    if [ "$ARCH" == "x86_64" ]; then \
       echo "x86_64 (amd64)" && \
       TARGETARCH="amd64"; \
-   elif [ "$ARCH" == "amd64" ]; then \
-      echo "amd64" && \
-      TARGETARCH="amd64"; \
-   elif [ "$ARCH" == "arm64" ]; then \
-      echo "arm64" && \
-      TARGETARCH="arm64"; \
    elif [ "$ARCH" == "aarch64" ]; then \
       echo "aarch64 (arm64)" && \
       TARGETARCH="arm64"; \
    elif [ "$ARCH" == "armv7l" ]; then \
-      echo "armv7l (arm)" && \
-      TARGETARCH="arm"; \
-   elif [ "$ARCH" == "armv6l" ]; then \
-      echo "armv6l (arm)" && \
-      TARGETARCH="arm"; \
-   elif [ "$ARCH" == "armhf" ]; then \
-      echo "armhf (arm)" && \
+      echo "armv7 (arm)" && \
       TARGETARCH="arm"; \
    else \
       echo "unknown arch" && \

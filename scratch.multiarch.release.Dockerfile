@@ -1,4 +1,4 @@
-FROM alpine:latest as build
+FROM alpine:latest AS build
 
 ARG MINIO_RELEASE_VERSION
 ARG MC_RELEASE_VERSION
@@ -15,28 +15,16 @@ RUN \
    if [ "$ARCH" == "x86_64" ]; then \
       echo "x86_64 (amd64)" && \
       TARGETARCH="amd64"; \
-   elif [ "$ARCH" == "amd64" ]; then \
-      echo "amd64" && \
-      TARGETARCH="amd64"; \
-   elif [ "$ARCH" == "arm64" ]; then \
-      echo "arm64" && \
-      TARGETARCH="arm64"; \
    elif [ "$ARCH" == "aarch64" ]; then \
       echo "aarch64 (arm64)" && \
       TARGETARCH="arm64"; \
    elif [ "$ARCH" == "armv7l" ]; then \
-      echo "armv7l (arm)" && \
-      TARGETARCH="arm"; \
-   elif [ "$ARCH" == "armv6l" ]; then \
-      echo "armv6l (arm)" && \
-      TARGETARCH="arm"; \
-   elif [ "$ARCH" == "armhf" ]; then \
-      echo "armhf (arm)" && \
+      echo "armv7 (arm)" && \
       TARGETARCH="arm"; \
    else \
       echo "unknown arch" && \
       exit 1; \
-   fi && \ 
+   fi && \
    export TARGETARCH=$TARGETARCH && \
    ## GET MINIO_RELEASE_VERSION ##
    MINIO_RELEASE_VERSION=${MINIO_RELEASE_VERSION:-$(curl -s https://api.github.com/repos/minio/minio/releases/latest | grep 'tag_name' | cut -d\" -f4)} && \
@@ -66,12 +54,13 @@ RUN \
    curl -s -q https://raw.githubusercontent.com/minio/minio/${MINIO_RELEASE_VERSION}/dockerscripts/docker-entrypoint.sh -o /usr/bin/docker-entrypoint.sh && \
    chmod +x /usr/bin/docker-entrypoint.sh
 
-FROM alpine:latest as static-curl
+FROM alpine:latest AS static-curl
 
 # curl: https://github.com/stunnel/static-curl
 # (Alternatives: https://github.com/moparisthebest/static-curl/releases or https://github.com/perryflynn/static-binaries)
 
 ARG CURL_VERSION
+ARG CURL_LIBC="musl"
 
 RUN \
    set -ex ; \
@@ -85,7 +74,7 @@ RUN \
       echo "aarch64 (arm64)" ; \
       TARGETARCH="$ARCH"; \
    elif [ "$ARCH" == "armv7l" ]; then \
-      echo "armv7l (arm)" ; \
+      echo "armv7 (arm)" ; \
       TARGETARCH="armv7"; \
    else \
       echo "unknown arch" ; \
@@ -95,8 +84,8 @@ RUN \
    #CURL_VERSION=${CURL_VERSION:-$(curl -s https://api.github.com/repos/stunnel/static-curl/releases/latest | grep 'tag_name' | cut -d\" -f4)} ; \
    CURL_VERSION=${CURL_VERSION:-$(wget -qO- https://api.github.com/repos/stunnel/static-curl/releases/latest | grep 'tag_name' | cut -d\" -f4)} ; \
    echo "CURL_VERSION=${CURL_VERSION}" ; \
-   #curl -sqL https://github.com/stunnel/static-curl/releases/download/${CURL_VERSION}/curl-linux-${TARGETARCH}-musl-${CURL_VERSION}.tar.xz  | tar -xJ -C /usr/local/bin/ curl ; \
-   wget -qO- https://github.com/stunnel/static-curl/releases/download/${CURL_VERSION}/curl-linux-${TARGETARCH}-musl-${CURL_VERSION}.tar.xz  | tar -xJ -C /usr/local/bin/ curl ; \
+   #curl -sqL https://github.com/stunnel/static-curl/releases/download/${CURL_VERSION}/curl-linux-${TARGETARCH}-${CURL_LIBC}-${CURL_VERSION}.tar.xz  | tar -xJ -C /usr/local/bin/ curl ; \
+   wget -qO- https://github.com/stunnel/static-curl/releases/download/${CURL_VERSION}/curl-linux-${TARGETARCH}-${CURL_LIBC}-${CURL_VERSION}.tar.xz  | tar -xJ -C /usr/local/bin/ curl ; \
    /usr/local/bin/curl --version
 
 FROM scratch
