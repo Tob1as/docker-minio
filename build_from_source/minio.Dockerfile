@@ -46,7 +46,7 @@ ENV MINIO_ACCESS_KEY_FILE=access_key \
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=build /go/bin/minio /usr/bin/minio
 #COPY --from=build /go/bin/mc /usr/bin/mc
-#COPY --from=static-curl /usr/local/bin/curl /usr/bin/curl
+#COPY --from=docker.io/tobi312/tools:static-curl /usr/bin/curl /usr/bin/curl
 
 COPY --from=build /go/src/minio/CREDITS /licenses/CREDITS
 COPY --from=build /go/src/minio/LICENSE /licenses/LICENSE

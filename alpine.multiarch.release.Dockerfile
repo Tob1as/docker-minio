@@ -21,6 +21,9 @@ RUN \
    elif [ "$ARCH" == "armv7l" ]; then \
       echo "armv7 (arm)" && \
       TARGETARCH="arm"; \
+   elif [ "$ARCH" == "ppc64le" ]; then \
+      echo "ppc64le" ; \
+      TARGETARCH="ppc64le"; \
    else \
       echo "unknown arch" && \
       exit 1; \

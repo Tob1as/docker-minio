@@ -21,6 +21,9 @@ RUN \
    elif [ "$ARCH" == "armv7l" ]; then \
       echo "armv7 (arm)" && \
       TARGETARCH="arm"; \
+   elif [ "$ARCH" == "ppc64le" ]; then \
+      echo "ppc64le" ; \
+      TARGETARCH="ppc64le"; \
    else \
       echo "unknown arch" && \
       exit 1; \
@@ -54,40 +57,6 @@ RUN \
    curl -s -q https://raw.githubusercontent.com/minio/minio/${MINIO_RELEASE_VERSION}/dockerscripts/docker-entrypoint.sh -o /usr/bin/docker-entrypoint.sh && \
    chmod +x /usr/bin/docker-entrypoint.sh
 
-FROM alpine:latest AS static-curl
-
-# curl: https://github.com/stunnel/static-curl
-# (Alternatives: https://github.com/moparisthebest/static-curl/releases or https://github.com/perryflynn/static-binaries)
-
-ARG CURL_VERSION
-ARG CURL_LIBC="musl"
-
-RUN \
-   set -ex ; \
-   #apk add --no-cache curl ca-certificates ; \
-   ARCH=`uname -m` ; \
-	echo "ARCH=$ARCH" ; \
-   if [ "$ARCH" == "x86_64" ]; then \
-      echo "x86_64 (amd64)" ; \
-      TARGETARCH="$ARCH"; \
-   elif [ "$ARCH" == "aarch64" ]; then \
-      echo "aarch64 (arm64)" ; \
-      TARGETARCH="$ARCH"; \
-   elif [ "$ARCH" == "armv7l" ]; then \
-      echo "armv7 (arm)" ; \
-      TARGETARCH="armv7"; \
-   else \
-      echo "unknown arch" ; \
-      exit 1; \
-   fi ; \
-   export TARGETARCH=${TARGETARCH} ; \
-   #CURL_VERSION=${CURL_VERSION:-$(curl -s https://api.github.com/repos/stunnel/static-curl/releases/latest | grep 'tag_name' | cut -d\" -f4)} ; \
-   CURL_VERSION=${CURL_VERSION:-$(wget -qO- https://api.github.com/repos/stunnel/static-curl/releases/latest | grep 'tag_name' | cut -d\" -f4)} ; \
-   echo "CURL_VERSION=${CURL_VERSION}" ; \
-   #curl -sqL https://github.com/stunnel/static-curl/releases/download/${CURL_VERSION}/curl-linux-${TARGETARCH}-${CURL_LIBC}-${CURL_VERSION}.tar.xz  | tar -xJ -C /usr/local/bin/ curl ; \
-   wget -qO- https://github.com/stunnel/static-curl/releases/download/${CURL_VERSION}/curl-linux-${TARGETARCH}-${CURL_LIBC}-${CURL_VERSION}.tar.xz  | tar -xJ -C /usr/local/bin/ curl ; \
-   /usr/local/bin/curl --version
-
 FROM scratch
 
 ARG MINIO_RELEASE_VERSION
@@ -120,7 +89,7 @@ ENV MINIO_ACCESS_KEY_FILE=access_key \
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=build /usr/bin/minio /usr/bin/minio
 COPY --from=build /usr/bin/mc /usr/bin/mc
-COPY --from=static-curl /usr/local/bin/curl /usr/bin/curl
+COPY --from=docker.io/tobi312/tools:static-curl /usr/bin/curl /usr/bin/curl
 
 COPY --from=build /licenses/CREDITS /licenses/CREDITS
 COPY --from=build /licenses/LICENSE /licenses/LICENSE
