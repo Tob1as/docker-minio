@@ -1,5 +1,9 @@
 # MinIO on x86_64 and ARM
 
+>⚠️ Deprecated !  
+> This repository is no longer maintained.  
+As the upstream [MinIO project](https://github.com/minio/minio/commit/27742d469462e1561c776f88ca7a1f26816d69e2) has entered maintenance mode, these Docker images should not be used.
+
 ### Supported tags and respective `Dockerfile` links
 
 -	[`latest`, `RELEASE.<date>` , `alpine`, `alpine-RELEASE.<date>` (*Dockerfile*)](https://github.com/Tob1as/docker-minio/blob/main/alpine.multiarch.release.Dockerfile)
